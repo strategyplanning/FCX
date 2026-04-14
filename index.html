@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freeport-McMoRan | Management Strategic Decision Engine</title>
+<style>
+:root {
+  --fcx-dark: #0a1628;
+  --fcx-navy: #14304d;
+  --fcx-copper: #b87333;
+  --fcx-copper-light: #d4956a;
+  --fcx-copper-glow: #e8a94e;
+  --fcx-gold: #c9a84c;
+  --fcx-teal: #1a7a6d;
+  --bg: #f4f5f7;
+  --card: #ffffff;
+  --text: #1a2a34;
+  --text-light: #556670;
+  --border: #dce3e8;
+  --green: #1b8a5a;
+  --red: #c0392b;
+  --amber: #d4890b;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;font-size:15px}
+
+.nav{position:fixed;top:0;left:0;right:0;background:var(--fcx-dark);z-index:100;border-bottom:2px solid var(--fcx-copper)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{color:var(--fcx-copper-glow);font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.nav-sub{color:rgba(255,255,255,.5);font-size:12px;margin-left:12px;font-weight:400}
+.nav-right{display:flex;gap:16px;align-items:center}
+.nav-right span{color:rgba(255,255,255,.6);font-size:12px}
+.nav-right .live{color:var(--green);font-weight:700;font-size:11px;padding:3px 10px;border:1px solid var(--green);border-radius:4px}
+
+.hero{background:linear-gradient(135deg,var(--fcx-dark) 0%,#1a2e4a 50%,var(--fcx-navy) 100%);padding:130px 32px 70px;color:#fff;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40%;right:-15%;width:500px;height:500px;background:radial-gradient(circle,rgba(184,115,51,.1),transparent 70%);border-radius:50%}
+.hero-inner{max-width:900px;margin:0 auto;position:relative}
+.hero-badge{display:inline-block;border:1px solid rgba(184,115,51,.5);color:var(--fcx-copper-glow);font-size:11px;font-weight:700;letter-spacing:2px;padding:5px 14px;border-radius:4px;margin-bottom:28px;text-transform:uppercase}
+.hero h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(32px,4.5vw,48px);font-weight:700;line-height:1.15;margin-bottom:20px}
+.hero p{font-size:16px;color:rgba(255,255,255,.7);line-height:1.7;max-width:700px;margin-bottom:40px}
+.hero-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;border-top:1px solid rgba(255,255,255,.12);padding-top:28px}
+.hero-kpi label{display:block;font-size:10px;font-weight:600;color:var(--fcx-copper-glow);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
+.hero-kpi .val{font-size:22px;font-weight:700;color:#fff}
+.hero-kpi .sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px}
+
+.section{max-width:1100px;margin:0 auto;padding:56px 32px}
+.section-label{font-size:11px;font-weight:700;color:var(--fcx-copper);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.section h2{font-family:Georgia,serif;font-size:28px;color:var(--fcx-dark);margin-bottom:16px;line-height:1.25}
+.section p{margin-bottom:14px;color:var(--text-light)}
+
+.driver-bar{display:flex;gap:2px;margin:20px 0 28px}
+.driver-pill{flex:1;text-align:center;padding:10px 8px;border-radius:8px;font-size:11px;font-weight:600;color:var(--fcx-dark);background:#eef1f4;border:1px solid var(--border);line-height:1.35}
+.driver-pill .dp-val{font-size:16px;font-weight:700;color:var(--fcx-copper);margin-bottom:2px}
+.driver-pill .dp-label{color:var(--text-light)}
+
+.choice-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:20px 0}
+.choice-card{background:var(--card);border:1px solid var(--border);border-top:4px solid var(--fcx-copper);border-radius:0 0 10px 10px;padding:18px 16px;cursor:pointer;transition:all .25s;text-align:center;position:relative}
+.choice-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.08);border-top-color:var(--fcx-copper-glow)}
+.choice-card .cc-num{font-size:10px;font-weight:700;letter-spacing:0.8px;color:var(--fcx-copper);text-transform:uppercase;margin-bottom:6px}
+.choice-card h3{font-size:14px;color:var(--fcx-dark);margin-bottom:6px;line-height:1.3}
+.choice-card .cc-q{font-size:11px;color:var(--text-light);line-height:1.45}
+.choice-card .cc-driver{font-size:10px;font-weight:600;color:var(--fcx-teal);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+
+.scenarios{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:28px 0}
+.scenario-card{border:1px solid var(--border);border-radius:10px;padding:24px 20px;background:var(--card);cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.scenario-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.scenario-card.active{border-color:var(--fcx-copper);box-shadow:0 0 0 2px var(--fcx-copper)}
+.scenario-card.s1{border-top:4px solid var(--green)}
+.scenario-card.s2{border-top:4px solid var(--fcx-copper)}
+.scenario-card.s3{border-top:4px solid var(--amber)}
+.scenario-card.s4{border-top:4px solid var(--red)}
+.scenario-card .tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-bottom:6px}
+.scenario-card h3{font-size:17px;color:var(--fcx-dark);margin:0 0 8px;line-height:1.3}
+.scenario-card .desc{font-size:13px;color:var(--text-light);line-height:1.55;margin-bottom:14px}
+.scenario-card .prob{font-size:13px;font-weight:700}
+.scenario-card .prob.g{color:var(--green)}.scenario-card .prob.c{color:var(--fcx-copper)}.scenario-card .prob.a{color:var(--amber)}.scenario-card .prob.r{color:var(--red)}
+.scenario-card .impact-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;display:inline-block;margin-top:4px}
+.impact-positive{background:#e8f5e9;color:#1b8a5a}
+.impact-mixed{background:#fff8e1;color:#b8860b}
+.impact-negative{background:#ffebee;color:#c0392b}
+
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);z-index:200;justify-content:center;align-items:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--card);border-radius:12px;max-width:620px;width:92%;max-height:80vh;overflow-y:auto;padding:32px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-box .modal-close{position:absolute;top:12px;right:16px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-light)}
+.modal-box h3{font-size:20px;color:var(--fcx-dark);margin-bottom:4px;font-family:Georgia,serif}
+.modal-box .modal-q{font-size:14px;color:var(--fcx-copper);font-weight:600;margin-bottom:18px;font-style:italic}
+.modal-box .modal-driver{font-size:12px;color:var(--fcx-copper);font-weight:600;margin-bottom:16px}
+.option-card{border:1px solid var(--border);border-left:4px solid var(--fcx-copper);border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:10px}
+.option-card h4{font-size:14px;color:var(--fcx-dark);margin-bottom:4px}
+.option-card p{font-size:12px;color:var(--text-light);line-height:1.5;margin:0}
+.signal-item{padding:10px 14px;margin-bottom:8px;border-radius:8px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.signal-item .si-name{font-size:13px;font-weight:600;color:var(--fcx-dark)}
+.signal-item .si-val{font-size:13px;font-weight:700}
+
+.builder{background:var(--card);border:2px solid var(--fcx-dark);border-radius:12px;overflow:hidden;margin:28px 0}
+.builder-step{padding:28px 32px;border-bottom:1px solid var(--border)}
+.builder-step:last-child{border-bottom:none}
+.builder-step-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;min-width:26px;flex-shrink:0;border-radius:50%;background:var(--fcx-dark);color:#fff;font-size:12px;font-weight:700}
+.builder-step-label{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--fcx-copper);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.builder-signals{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.signal-ctrl label{display:block;font-size:13px;font-weight:600;color:var(--fcx-dark);margin-bottom:6px}
+.signal-ctrl .sig-row{display:flex;align-items:center;gap:10px}
+.signal-ctrl .sig-range{flex:1;accent-color:var(--fcx-copper);height:6px}
+.signal-ctrl .sig-val{font-size:12px;font-weight:700;color:var(--fcx-copper);min-width:155px;text-align:right}
+.signal-ctrl .sig-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text-light);margin-top:2px}
+.gauge-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.gauge-label{font-size:13px;font-weight:600;min-width:180px;color:var(--fcx-dark)}
+.gauge-track{flex:1;height:30px;background:#eef1f4;border-radius:6px;overflow:hidden}
+.gauge-fill{height:100%;border-radius:6px;transition:width .4s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;font-size:12px;font-weight:700;color:#fff;min-width:42px}
+.gauge-fill.gf-supercycle{background:var(--green)}
+.gauge-fill.gf-steady{background:var(--fcx-copper)}
+.gauge-fill.gf-recession{background:var(--amber)}
+.gauge-fill.gf-nationalism{background:var(--red)}
+.builder-fin{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.builder-fin-item{text-align:center;padding:16px;background:#f0ebe4;border-radius:8px}
+.builder-fin-item .bf-val{font-size:24px;font-weight:700;color:var(--fcx-copper)}
+.builder-fin-item .bf-label{font-size:11px;color:var(--text-light);margin-top:2px}
+.builder-fin-item .bf-delta{font-size:11px;font-weight:600;margin-top:2px}
+.builder-decs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.builder-dec{border-left:4px solid var(--fcx-copper);padding:10px 14px;background:#f0ebe4;border-radius:0 6px 6px 0;transition:all .2s}
+.builder-dec .bd-num{font-size:11px;font-weight:700;color:var(--fcx-copper);letter-spacing:1px}
+.builder-dec .bd-rec{font-size:13px;font-weight:700;color:var(--fcx-dark);margin-top:3px}
+.builder-dec .bd-why{font-size:11px;color:var(--text-light);margin-top:3px;line-height:1.4}
+.builder-dec.confident{border-left-color:var(--green)}
+.builder-dec.somewhat-confident{border-left-color:var(--amber)}
+.builder-dec.uncertain{border-left-color:var(--red)}
+.conf-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:12px;text-transform:uppercase;vertical-align:middle;margin-left:4px}
+.conf-badge.cb-confident{background:#e8f5e9;color:var(--green);border:1px solid var(--green)}
+.conf-badge.cb-somewhat-confident{background:#fff8e1;color:#b8860b;border:1px solid var(--amber)}
+.conf-badge.cb-uncertain{background:#ffebee;color:var(--red);border:1px solid var(--red)}
+.builder-flow{display:flex;align-items:center;justify-content:center;gap:20px;padding:14px 32px;background:var(--fcx-dark);font-size:12px;font-weight:600;color:rgba(255,255,255,.7);letter-spacing:1px}
+.builder-flow .flow-arrow{color:var(--fcx-copper-glow);font-size:16px}
+.builder-flow .flow-active{color:#fff}
+
+.wyhtb-box{margin-top:8px;padding:10px 14px;background:linear-gradient(135deg,#fdf6ee,#fef9f3);border-left:3px solid var(--fcx-gold);border-radius:0 6px 6px 0;font-size:12px;color:var(--text);line-height:1.55;transition:all .3s ease}
+.wyhtb-box .wyhtb-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--fcx-gold);margin-bottom:4px}
+
+.blend-summary{display:flex;gap:2px;height:36px;border-radius:8px;overflow:hidden;margin:16px 0}
+.blend-seg{display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;transition:width .4s ease;min-width:0;overflow:hidden}
+.blend-seg.bs-supercycle{background:var(--green)}
+.blend-seg.bs-steady{background:var(--fcx-copper)}
+.blend-seg.bs-recession{background:var(--amber)}
+.blend-seg.bs-nationalism{background:var(--red)}
+
+.source-bar{background:#f0ebe4;border-left:4px solid var(--fcx-copper);padding:16px 20px;border-radius:0 8px 8px 0;margin:20px 0;font-size:13px;color:var(--fcx-dark);line-height:1.6}
+.source-bar strong{color:var(--fcx-copper)}
+.callout{background:#f0ebe4;border-left:4px solid var(--fcx-copper);padding:18px 22px;border-radius:0 8px 8px 0;margin:20px 0;font-weight:500;color:var(--fcx-dark);line-height:1.65;font-size:14px}
+
+.footer{background:var(--fcx-dark);color:rgba(255,255,255,.4);padding:28px;text-align:center;font-size:12px}
+.footer strong{color:var(--fcx-copper-glow)}
+
+hr.divider{border:none;border-top:1px solid var(--border);margin:40px 0}
+
+.btn-reset{display:inline-flex;align-items:center;gap:6px;background:var(--fcx-dark);color:#fff;border:none;padding:8px 18px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.5px;transition:all .2s}
+.btn-reset:hover{background:var(--fcx-copper)}
+
+
+/* ── Hamburger menu ── */
+.nav-toggle{display:none;background:none;border:none;color:var(--fcx-copper-glow);font-size:24px;cursor:pointer;padding:8px;min-width:44px;min-height:44px;align-items:center;justify-content:center}
+.nav-menu{display:flex;gap:16px;align-items:center}
+@media(max-width:900px){
+  .scenarios{grid-template-columns:1fr 1fr}
+  .builder-signals{grid-template-columns:1fr}
+  .builder-fin{grid-template-columns:repeat(2,1fr)}
+  .builder-decs{grid-template-columns:1fr}
+  .choice-grid{grid-template-columns:repeat(2,1fr)}
+  .driver-bar{flex-wrap:wrap}
+  .driver-pill{min-width:45%;flex:1 1 45%}
+}
+@media(max-width:768px){
+  .nav-toggle{display:inline-flex}
+  .nav-sub{display:none}
+  .nav-inner{padding:10px 16px}
+  .hero{padding:90px 18px 40px}
+  .hero h1{font-size:26px}
+  .hero p{font-size:14px}
+  .section{padding:36px 18px}
+  .section h2{font-size:22px}
+  .scenarios{grid-template-columns:1fr}
+  .scenario-card{padding:18px 16px}
+  .scenario-card .desc{font-size:12px}
+  .choice-grid{grid-template-columns:1fr}
+  .choice-card{padding:16px;min-height:44px}
+  .driver-bar{flex-direction:column;gap:6px}
+  .driver-pill{min-width:100%}
+  .builder-step{padding:20px 18px}
+  .builder-signals{grid-template-columns:1fr}
+  .builder-fin{grid-template-columns:1fr}
+  .builder-flow{flex-wrap:wrap;gap:8px;padding:10px 16px;font-size:11px}
+  .modal-box{width:96%;padding:22px 18px;max-height:88vh}
+  .source-bar{font-size:12px;padding:14px 16px}
+  .callout{padding:14px 16px;font-size:13px}
+  /* Touch targets */
+  .scenario-card,.choice-card,.toggle-btn,.btn-reset{min-height:44px}
+  .sig-range{height:10px !important}
+  input[type="range"]::-webkit-slider-thumb{width:44px !important;height:44px !important}
+  input[type="range"]::-moz-range-thumb{width:44px !important;height:44px !important}
+  select{min-height:44px;font-size:14px}
+  /* Stacked comparison table */
+  .builder-comparison-grid{grid-template-columns:1fr !important}
+}
+@media(max-width:480px){
+  .hero{padding:80px 12px 30px}
+  .hero h1{font-size:22px}
+  .section{padding:28px 12px}
+  .section h2{font-size:19px}
+  .builder-step{padding:16px 12px}
+  .modal-box{padding:18px 14px}
+  .scenario-card h3{font-size:15px}
+  .choice-card h3{font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none !important;animation:none !important}
+}
+@media print{
+  .nav,.modal-overlay{display:none !important}
+  .hero{padding-top:20px}
+  body{font-size:12px}
+}
+/* ── Password Gate ── */
+.pw-gate{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,var(--fcx-dark) 0%,#1a2e4a 50%,var(--fcx-navy) 100%);display:flex;align-items:center;justify-content:center;flex-direction:column}
+.pw-gate.hidden{display:none}
+.pw-box{background:rgba(255,255,255,.06);border:1px solid rgba(184,115,51,.3);border-radius:14px;padding:44px 40px;max-width:380px;width:90%;text-align:center;backdrop-filter:blur(12px)}
+.pw-box h2{font-family:Georgia,serif;color:#fff;font-size:22px;margin-bottom:6px}
+.pw-box .pw-sub{color:var(--fcx-copper-light);font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:28px}
+.pw-box input{width:100%;padding:14px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;font-size:15px;text-align:center;letter-spacing:1px;outline:none;min-height:48px;transition:border-color .2s}
+.pw-box input:focus{border-color:var(--fcx-copper)}
+.pw-box input::placeholder{color:rgba(255,255,255,.3)}
+.pw-box button{width:100%;margin-top:14px;padding:14px;border:none;border-radius:8px;background:var(--fcx-copper);color:#fff;font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;min-height:48px;transition:background .2s}
+.pw-box button:hover{background:var(--fcx-copper-glow)}
+.pw-error{color:var(--red);font-size:12px;font-weight:600;margin-top:10px;min-height:18px}
+</style>
+</head>
+<body>
+
+<!-- ════════ PASSWORD GATE ════════ -->
+<div class="pw-gate" id="pwGate">
+  <div class="pw-box">
+    <h2>Freeport-McMoRan</h2>
+    <div class="pw-sub">Management Strategic Decision Engine</div>
+    <form onsubmit="return checkPw(event)">
+      <input type="password" id="pwInput" placeholder="Enter password" autocomplete="off" autofocus>
+      <button type="submit">Access</button>
+    </form>
+    <div class="pw-error" id="pwError"></div>
+  </div>
+</div>
+<script>
+function checkPw(e){
+  e.preventDefault();
+  var v=document.getElementById('pwInput').value;
+  if(v==='1Diggers'){
+    document.getElementById('pwGate').classList.add('hidden');
+    return false;
+  }
+  document.getElementById('pwError').textContent='Incorrect password';
+  document.getElementById('pwInput').value='';
+  document.getElementById('pwInput').focus();
+  return false;
+}
+</script>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div><span class="nav-brand">Freeport-McMoRan</span><span class="nav-sub">Management Strategic Decision Engine</span></div>
+    <div class="nav-right nav-menu">
+      <span class="live">LIVE</span>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Management Strategic Decision Engine</div>
+    <h1>What are the highest-leverage choices management must make in the next 3 years?</h1>
+    <p>Five strategic choices face management over the 2026–2029 horizon, stress-tested against four divergent futures and grounded in the drivers that move FCX's economics. Every slider, scenario, and signal answers one question: <strong>given what we believe today, what should we commit to?</strong></p>
+  </div>
+</div>
+
+<!-- ═══ SECTION 1: FIVE STRATEGIC CHOICES ═══ -->
+<div class="section">
+  <div class="section-label">Strategic Choices</div>
+  <h2>Five choices management must resolve in the next 3 years</h2>
+  <p><strong>Click any choice</strong> to see the options available and how each connects to FCX's business drivers</p>
+
+  <div class="driver-bar">
+    <div class="driver-pill"><div class="dp-val">$5.84/lb</div><div class="dp-label">Copper Price</div></div>
+    <div class="driver-pill"><div class="dp-val">3.7B lbs</div><div class="dp-label">2026E Cu Production</div></div>
+    <div class="driver-pill"><div class="dp-val">$2.22/lb</div><div class="dp-label">Unit Cash Cost</div></div>
+    <div class="driver-pill"><div class="dp-val">$4,078/oz</div><div class="dp-label">Gold Price</div></div>
+    <div class="driver-pill"><div class="dp-val">$4.3–4.5B</div><div class="dp-label">Annual Capex</div></div>
+  </div>
+
+  <div class="choice-grid" id="choice-grid"></div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══ SECTION 2: FOUR DIVERGENT FUTURES ═══ -->
+<div class="section">
+  <div class="section-label">Four Divergent Futures</div>
+  <h2>The scenarios that change which options are right</h2>
+  <p>These are not forecasts. They are stress tests for the five strategic choices. Each scenario is the world in which a different strategic path becomes optimal. Click any scenario to see the signals that indicate it is materializing</p>
+
+  <div class="scenarios">
+    <div class="scenario-card s1" onclick="openScenarioModal(0)">
+      <div class="tag">Scenario 1</div>
+      <h3>Copper Supercycle</h3>
+      <div class="desc">Electrification accelerates. EVs, grid buildout, AI data centers (projected 1,050 TWh by 2026, each TWh requiring substantial copper), and defense spending (potentially $6T by 2040) create a structural supply deficit of 5–8Mt by 2030. S&P Global (Jan 2026) projects demand surging from 28MT to 42MT by 2040. Copper sustains $6–8/lb. Mine supply additions fail to keep pace as ore grades have declined 40% since 1990</div>
+      <div class="prob g">Baseline: ~30%</div>
+      <span class="impact-tag impact-positive">STRONG POSITIVE</span>
+    </div>
+    <div class="scenario-card s2" onclick="openScenarioModal(1)">
+      <div class="tag">Scenario 2 | Base Case</div>
+      <h3>Steady Demand Growth</h3>
+      <div class="desc">Copper demand grows 2–3%/yr. EV adoption on trend. Grasberg restarts on schedule (Q2 2026 phased restart per company guidance, permit extended to 2041). Bagdad autonomous haulage fully operational. Leaching innovation continues scaling. Copper holds $4.50–5.50/lb. FCX executes Bagdad expansion and leaching ramp, returning capital to shareholders at current pace</div>
+      <div class="prob c">Baseline: ~35%</div>
+      <span class="impact-tag impact-positive">POSITIVE</span>
+    </div>
+    <div class="scenario-card s3" onclick="openScenarioModal(2)">
+      <div class="tag">Scenario 3</div>
+      <h3>Demand Shock / Recession</h3>
+      <div class="desc">Global recession, China property crisis deepens, EV adoption stalls. Copper drops to $3.00–3.50/lb. Marginal mines close. FCX's low-cost position becomes a defensive moat but growth capex must be deferred</div>
+      <div class="prob a">Baseline: ~20%</div>
+      <span class="impact-tag impact-negative">NEGATIVE</span>
+    </div>
+    <div class="scenario-card s4" onclick="openScenarioModal(3)">
+      <div class="tag">Scenario 4</div>
+      <h3>Resource Nationalism</h3>
+      <div class="desc">Indonesia, Peru, and Chile tighten mining regulations, raise royalties, or restrict exports. PT-FI faces renegotiation pressure. Domestic processing mandates increase costs. Geopolitical fragmentation disrupts trade flows</div>
+      <div class="prob r">Baseline: ~15%</div>
+      <span class="impact-tag impact-mixed">MIXED</span>
+    </div>
+  </div>
+
+  <div class="source-bar">
+    <strong>Scenario calibration sources:</strong> Goldman Sachs copper supply-demand model; Wood Mackenzie mine supply pipeline; FCX Q4 2025 earnings (Jan 2026); IEA Critical Minerals Outlook 2025; Grasberg restart update (Mar 2026); LME/COMEX spot pricing; analyst consensus from 29 Wall Street coverage firms; S&amp;P Global copper supply gap study (Jan 2026); PDAC 2026 technical sessions on AI in exploration; Caterpillar/FCX Bagdad AHS deployment data; Dig Deep &amp; Mining Now podcast industry commentary; McKinsey autonomous fleet penetration analysis
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══ SECTION 3: WHAT-IF ENGINE ═══ -->
+<div class="section" id="builder-section">
+  <div class="section-label">The What-If Engine | Calibrated to Today's Market Reality</div>
+  <h2>Build your view of the world. See what choices follow.</h2>
+  <p>Each slider starts at today's consensus baseline. As you move a slider, a "What You Have to Believe" rationale appears, forcing you to reconcile your assumptions with market reality. The tool maps your expectations to a probabilistic scenario blend, projects the 2028–2029 financial impact, and surfaces the strategic choices that follow</p>
+
+  <div class="source-bar" style="margin-bottom:8px">
+    <strong>Baseline Calibration:</strong> Copper at $5.84/lb (spot) &nbsp;|&nbsp; Gold at $4,078/oz (spot) &nbsp;|&nbsp; Grasberg restart: Q2 2026 (company guidance) &nbsp;|&nbsp; EV share at 22% global (IEA 2025) &nbsp;|&nbsp; Indonesia regulatory: current IUPK terms &nbsp;|&nbsp; China PMI at 50.5 (current)
+  </div>
+
+  <div class="builder">
+    <div class="builder-flow">
+      <span class="flow-active">SIGNALS + BELIEFS</span>
+      <span class="flow-arrow">&rarr;</span>
+      <span class="flow-active">SCENARIO BLEND</span>
+      <span class="flow-arrow">&rarr;</span>
+      <span class="flow-active">STRATEGIC CHOICES</span>
+      <span class="flow-arrow">&rarr;</span>
+      <span class="flow-active">FINANCIAL IMPACT</span>
+    </div>
+
+    <div class="builder-step">
+      <div class="builder-step-label">
+        <span class="builder-step-num">1</span> What signals do you expect to see? (What You Have to Believe)
+        <button class="btn-reset" onclick="resetSliders()" style="margin-left:auto">&#8634; Reset to Baseline</button>
+      </div>
+      <div class="builder-signals" id="builder-signals"></div>
+    </div>
+
+    <div class="builder-step">
+      <div class="builder-step-label"><span class="builder-step-num">2</span> Scenario Blend: the probability-weighted future from your signals</div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:14px">Your assumptions produce a weighted blend across all four scenarios. The bars show the probability each scenario contributes to your outlook</p>
+      <div id="blend-bar-container"></div>
+      <div id="scenario-gauge" style="margin-top:14px"></div>
+      <div id="gauge-insight" style="margin-top:14px;font-size:13px;color:var(--text-light);line-height:1.6;font-style:italic"></div>
+    </div>
+
+    <div class="builder-step">
+      <div class="builder-step-label"><span class="builder-step-num">3</span> The strategic choices this drives today</div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:14px">Based on your signals, here is the recommended option for each of the five strategic choices. <span style="color:var(--green);font-weight:600">With Confidence</span> = recommendation holds across the two most likely scenarios. <span style="color:var(--amber);font-weight:600">With Some Confidence</span> = recommendation changes depending on which scenario dominates. <span style="color:var(--red);font-weight:600">With Caution</span> = top two scenarios produce very different paths</p>
+      <div class="builder-decs" id="builder-decs"></div>
+    </div>
+
+    <div class="builder-step">
+      <div class="builder-step-label"><span class="builder-step-num">4</span> Impact on FCX's Business Drivers: Today vs Your Future State</div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:18px">Left column shows where FCX stands today (2025 actuals / 2026E guidance). Right column shows the implied terminal state (2028–2029) based on your signal inputs. The delta highlights what changes and by how much</p>
+      <div id="builder-comparison"></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <strong>Freeport-McMoRan Inc.</strong> | Management Strategic Decision Engine | Confidential<br>
+  Data as of April 14, 2026 | Sources: FCX Q4 2025 Earnings, Grasberg Restart Update (Mar 2026), LME/COMEX, Goldman Sachs, Wood Mackenzie, IEA, S&amp;P Global (Jan 2026), PDAC 2026, McKinsey, Caterpillar/MineStar, analyst consensus<br>
+  3-year strategic horizon (2026–2029). This tool is a decision instrument, not a discussion paper
+</div>
+
+<!-- ═══ MODALS ═══ -->
+<div class="modal-overlay" id="choice-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('choice-modal')">&times;</button>
+    <div id="choice-modal-content"></div>
+  </div>
+</div>
+<div class="modal-overlay" id="scenario-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('scenario-modal')">&times;</button>
+    <div id="scenario-modal-content"></div>
+  </div>
+</div>
+
+<script>
+// ═══ MODAL HELPERS ═══
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click',e=>{ if(e.target===el) el.classList.remove('open'); });
+});
+
+// ═══ FIVE STRATEGIC CHOICES ═══
+const choices = [
+  {
+    num:"Choice 1", title:"Grasberg Recovery & Indonesia Strategy",
+    question:"How aggressively should FCX pursue Grasberg restart, and what concessions should be made to the Indonesian government to secure the long-term operating framework?",
+    driver:"Drives: ~30% of Cu production, ~90% of gold revenue, Indonesia regulatory relationship, smelter economics",
+    options:[
+      {name:"Aggressive restart, full investment", desc:"Fast-track Block 2 & 3 restart in Q2 2026, commit to Block 1 by 2027. Accept Indonesia's domestic processing mandates fully. Targets 1.5B lbs Cu and 1.4M oz Au by 2028. The Sept 2025 mud rush (~800kt wet material, 7 fatalities) forced a safety and geotechnical reset; aggressive restart assumes containment protocols hold. Permit extension to 2041 via Indonesia MoU secures the long-term operating framework. Maximizes production but concentrates risk in a single jurisdiction and increases smelter capex by $500M+"},
+      {name:"Phased restart, negotiate terms", desc:"Restart Block 2 & 3 on schedule but defer Block 1 until safety review is complete and IUPK terms are renegotiated. Targets 1.2B lbs Cu by 2028. The Grasberg force majeure was a material contributor to reversing a ~200kt global copper surplus forecast into a ~150kt deficit for 2026 (ICSG). Balances production recovery with regulatory leverage. Gold revenue recovers to ~$3.5B/yr"},
+      {name:"Managed decline, shift capital to Americas", desc:"Maintain current operations but redirect marginal investment to US leaching and Bagdad. Accept Grasberg will produce 0.8–1.0B lbs Cu through 2029. Given FCX's Bagdad AHS success (first fully autonomous U.S. copper mine, Aug 2025) and leaching innovation, the Americas portfolio can absorb growth capital productively. Reduces Indonesia concentration risk but sacrifices $2–3B/yr in gold revenue and cedes operational control"},
+    ]
+  },
+  {
+    num:"Choice 2", title:"Bagdad Expansion Decision",
+    question:"Should FCX commit $3.5B to double Bagdad's concentrator capacity, adding 200–250M lbs Cu/yr in the US?",
+    driver:"Drives: US production growth, unit cost trajectory, critical minerals positioning, leverage capacity",
+    options:[
+      {name:"Full commitment — FID mid-2026", desc:"Approve $3.5B expansion for 2029 startup. Adds 200–250M lbs Cu/yr at competitive costs in a Tier 1 jurisdiction. Bagdad is already FCX's autonomous proving ground: 33 Cat 793 trucks fully converted to AHS via Cat MineStar Command (first major U.S. copper mine, operational since Aug 2025), delivering 10–15% equipment utilization gains and ~30% downtime reduction via digital twin integration. The expansion leverages this operational infrastructure. Aligns with 'America's Copper Champion' strategy and US critical minerals incentives. Pushes capex to $5B+ annually through 2028"},
+      {name:"Phase 1 only ($1.5B)", desc:"Approve initial concentrator expansion only, deferring full buildout until copper price signal confirms supercycle. Adds ~100M lbs Cu/yr by 2028. Lower risk but misses the window if copper supply gap materializes quickly — S&P Global (Jan 2026) projects the gap widening 24% by 2040 with average mine-to-production timelines of 16.3 years and ore grades declining 40% since 1990"},
+      {name:"Defer pending Grasberg clarity", desc:"Delay Bagdad FID until Grasberg restart trajectory is confirmed and capital allocation capacity is clear. Preserves balance sheet flexibility but risks losing contractor pricing and engineering momentum on a 3-year build cycle. With autonomous fleet penetration still <10% globally (McKinsey), FCX's first-mover AHS advantage at Bagdad is a time-limited competitive moat"},
+    ]
+  },
+  {
+    num:"Choice 3", title:"Leaching Technology Scale-Up",
+    question:"How fast should FCX scale the Americas Leach Innovation Initiative toward the 800M lb/yr target by 2030?",
+    driver:"Drives: Incremental low-cost production, unit cash cost reduction, 'virtual mine' value creation, innovation narrative",
+    options:[
+      {name:"Aggressive scale — target 800M lbs by 2029", desc:"Accelerate Jetti Resources partnership, expand catalyst deployment across all US operations. Invest $500M over 3 years. FCX's AI-driven analytics now use pharmaceutical-grade additive modeling to identify under-leached zones in waste stockpiles, achieving recovery rates conventional models miss. The technology is running at a 300M lb annual rate in early 2026 at sub-$1.00/lb cost. If the full 800M lb target is hit, this is effectively a mid-tier mine unlocked from existing waste rock with near-zero permitting risk and a fraction of greenfield capital intensity"},
+      {name:"Moderate — target 600M lbs by 2030", desc:"Continue current rollout cadence. Invest $300M over 3 years. Lower technology risk, proven recovery rates at current scale. The AI analytics component continues to improve zone identification. Adds meaningful production at excellent margins but doesn't fully capture the stockpile opportunity before competitors develop comparable processes"},
+      {name:"Cautious — hold at 400M lbs, prove economics", desc:"Maintain current leaching production while running extended pilot programs at Bagdad and Miami. Invest $150M. PDAC 2026 technical sessions highlighted AI applications achieving 40–50% improvement in drill-target success rates, suggesting the broader industry is closing in on similar ML-driven extraction techniques. Holding at 400M lbs risks allowing competitors to close FCX's innovation lead"},
+    ]
+  },
+  {
+    num:"Choice 4", title:"Capital Allocation & Shareholder Returns",
+    question:"How should FCX split ~$6B+ annual FCF between growth capex, debt reduction, and shareholder returns in a $5.50+ copper environment?",
+    driver:"Drives: Growth rate, balance sheet strength, shareholder return trajectory, investment-grade ratings",
+    options:[
+      {name:"Growth-first (60% growth / 40% returns)", desc:"Maximize Bagdad, leaching, and Grasberg investment. Target 4.5B+ lbs Cu by 2029. LME copper hit a record $13,240/mt in Jan 2026 and S&P Global projects demand surging from 28MT to 42MT by 2040 — with AI data center buildout alone requiring 1.1M tonnes of copper annually by 2030 (~3% of global demand) and $7.5T in cumulative grid T&D investment needed. In this environment, every incremental pound of production earns a scarcity premium that widens over the planning horizon. Leverage increases to 1.2x but remains investment-grade"},
+      {name:"Balanced (45/55 growth vs returns)", desc:"Fund Bagdad Phase 1 and moderate leaching scale-up while increasing dividends 10–15%/yr and running $2B+ annual buybacks. Targets 4.0B lbs Cu by 2029. Leverage stays at 0.8x. Best if copper holds $4.50–5.50. J.P. Morgan projects a ~330kt global refined deficit heading into 2026, supporting sustained elevated prices but not the acute squeeze the supercycle thesis requires"},
+      {name:"Returns-first (30% growth / 70% returns)", desc:"Prioritize special dividends and aggressive buybacks ($4B+/yr). Defer Bagdad, slow leaching to current pace. Share count reduction of 8–10% by 2029. Correct if you believe copper is near cyclical peak and FCX should harvest, not invest. Note: energy transition copper demand is projected to triple by 2045, the most aggressive industrial material requirement since post-war reconstruction — returning capital now assumes this thesis is overbuilt"},
+    ]
+  },
+  {
+    num:"Choice 5", title:"M&A vs Organic Growth",
+    question:"Should FCX pursue transformational M&A to secure the next generation of copper supply, or focus exclusively on organic projects?",
+    driver:"Drives: Long-term production pipeline, reserve replacement, competitive positioning in copper supply gap",
+    options:[
+      {name:"Transformational acquisition", desc:"Target a major copper asset (Teck's QB2, Anglo's copper portfolio, or a late-stage greenfield). Spend $10–15B to add 500M+ lbs/yr. With average mine-to-production timelines stretching to 16.3 years and ore grades declining 40% since 1990, acquiring operating assets may be the only way to add meaningful production within the 2030 supply window. Risks Freeport's historical M&A curse (2007 Phelps Dodge) and pushes leverage above 2.0x"},
+      {name:"Bolt-on + exploration", desc:"Pursue $1–3B in targeted bolt-on acquisitions (advanced exploration projects, operating mines in Chile/Peru). Supplement with greenfield exploration budget of $200M/yr. FCX can deploy its proven AI exploration capabilities (PDAC 2026 data shows 40–50% drill-target success improvement) to de-risk acquired assets faster than competitors. Adds 100–200M lbs/yr by 2030. Lower risk, maintains financial discipline"},
+      {name:"Organic only — the organic doctrine", desc:"Focus exclusively on Bagdad, leaching, and Grasberg optimization. Zero M&A premium paid. Targets 4.2B lbs Cu by 2029 from existing portfolio. FCX's AI-powered expansion (autonomous drilling, AHS, real-time ore analysis) targets +900M lbs/yr by late 2026 — and Mariana Resources' 'Copper One' autonomy-first mine signals the sector's directional shift toward fully integrated AI operations. Management's stated preference. Disciplined but may leave FCX undersized vs BHP/Rio in the 2030s supply gap"},
+    ]
+  },
+];
+
+function renderChoices() {
+  const grid = document.getElementById('choice-grid');
+  grid.innerHTML = choices.map((c, i) =>
+    `<div class="choice-card" onclick="openChoiceModal(${i})">
+      <div class="cc-num">${c.num}</div>
+      <h3>${c.title}</h3>
+      <div class="cc-q">${c.question}</div>
+      <div class="cc-driver">${c.driver.replace('Drives: ','')}</div>
+    </div>`
+  ).join('');
+}
+
+function openChoiceModal(idx) {
+  const c = choices[idx];
+  const el = document.getElementById('choice-modal-content');
+  el.innerHTML = `
+    <h3>${c.num}: ${c.title}</h3>
+    <div class="modal-q">${c.question}</div>
+    <div class="modal-driver">${c.driver}</div>
+    ${c.options.map((o,i) => `
+      <div class="option-card">
+        <h4>Option ${i+1}: ${o.name}</h4>
+        <p>${o.desc}</p>
+      </div>
+    `).join('')}
+  `;
+  openModal('choice-modal');
+}
+
+renderChoices();
+
+// ═══ SCENARIO SIGNALS DATA ═══
+const scenarioSignals = [
+  {
+    name:"Copper Supercycle", color:"var(--green)",
+    desc:"This scenario materializes when electrification demand accelerates beyond consensus, mine supply additions disappoint, and copper's role in AI data center cooling and defense applications creates demand that existing supply cannot meet. Vale CEO Pimenta's PDAC 2026 keynote cited 5–6x mineral demand growth from electrification, AI infrastructure, and global development — validating the structural thesis. AI data center buildout alone is forecast to require 1.1M tonnes of copper annually by 2030. FCX's production volumes and pricing power surge simultaneously",
+    signals:[
+      {name:"Copper Price", val:"$6.50+ sustained", color:"var(--green)"},
+      {name:"Global EV Share", val:"30%+ by 2028", color:"var(--green)"},
+      {name:"Mine Supply Gap", val:">5Mt deficit by 2030", color:"var(--green)"},
+      {name:"China PMI", val:"52+ (expansion)", color:"var(--green)"},
+      {name:"US Grid Investment", val:"$100B+/yr enacted", color:"var(--green)"},
+      {name:"Gold Price", val:"$4,500+/oz", color:"var(--green)"},
+    ],
+    choiceTriggers:"When 3+ signals activate: accelerate Bagdad FID (C2), aggressive leaching scale-up (C3), and growth-first capital allocation (C4)"
+  },
+  {
+    name:"Steady Demand Growth", color:"var(--fcx-copper)",
+    desc:"The base case holds when copper demand grows at 2–3%/yr, Grasberg restarts on schedule, and no extreme supply or demand shocks materialize. FCX's autonomous operations (Bagdad AHS delivering 10–15% utilization gains, digital twin targeting ~30% downtime reduction) and leaching innovation (300M lb run-rate at sub-$1/lb, targeting 800M by 2030) compound value through operational execution. Disciplined capital allocation leverages the first-mover autonomous advantage while competitors remain at <10% global fleet penetration (McKinsey)",
+    signals:[
+      {name:"Copper Price", val:"$4.50–5.50/lb range", color:"var(--fcx-copper)"},
+      {name:"Global EV Share", val:"22–28% by 2028", color:"var(--fcx-copper)"},
+      {name:"Mine Supply Gap", val:"2–4Mt by 2030", color:"var(--fcx-copper)"},
+      {name:"China PMI", val:"49–51 (neutral)", color:"var(--fcx-copper)"},
+      {name:"US Grid Investment", val:"Current IRA pace", color:"var(--fcx-copper)"},
+      {name:"Gold Price", val:"$3,500–4,200/oz", color:"var(--fcx-copper)"},
+    ],
+    choiceTriggers:"Base case: current strategic posture is appropriate. Execute Grasberg restart, evaluate Bagdad mid-year, continue leaching scale"
+  },
+  {
+    name:"Demand Shock / Recession", color:"var(--amber)",
+    desc:"Global recession compresses copper demand. China property continues to drag. EV subsidies expire without renewal. Copper drops below $3.50/lb, triggering mine closures industry-wide. FCX's low-cost position protects margins but growth capex must be deferred until the cycle turns",
+    signals:[
+      {name:"Copper Price", val:"Below $3.50/lb for 6mo+", color:"var(--amber)"},
+      {name:"Global EV Share", val:"Stalls at 18–20%", color:"var(--amber)"},
+      {name:"Mine Supply Gap", val:"Surplus emerges", color:"var(--amber)"},
+      {name:"China PMI", val:"Below 48 (contraction)", color:"var(--amber)"},
+      {name:"US Grid Investment", val:"IRA rolled back", color:"var(--amber)"},
+      {name:"Gold Price", val:"$2,800–3,200/oz", color:"var(--amber)"},
+    ],
+    choiceTriggers:"When 3+ signals activate: defer Bagdad (C2), slow leaching (C3), returns-first capital allocation (C4), and position for distressed M&A (C5)"
+  },
+  {
+    name:"Resource Nationalism", color:"var(--red)",
+    desc:"Host governments tighten terms. Indonesia renegotiates PT-FI IUPK, demands higher state ownership or windfall taxes. Peru raises royalties to 10%+. Chile implements progressive copper tax. Export restrictions fragment global copper markets. FCX's multi-jurisdiction exposure becomes a vulnerability rather than a diversifier",
+    signals:[
+      {name:"Indonesia Regulation", val:"IUPK renegotiation or export ban", color:"var(--red)"},
+      {name:"Peru/Chile Royalties", val:"10%+ effective rate", color:"var(--red)"},
+      {name:"Copper Price", val:"$5+ (windfall tax trigger)", color:"var(--red)"},
+      {name:"Global Trade", val:"Fragmented / bloc-based", color:"var(--red)"},
+      {name:"US Critical Minerals", val:"Domestic preference enacted", color:"var(--red)"},
+      {name:"Grasberg Smelter Mandate", val:"100% in-country processing", color:"var(--red)"},
+    ],
+    choiceTriggers:"When 3+ signals activate: shift capital to Americas (C1), accelerate Bagdad (C2), and pursue US-focused organic growth (C5)"
+  },
+];
+
+function openScenarioModal(idx) {
+  const s = scenarioSignals[idx];
+  const el = document.getElementById('scenario-modal-content');
+  el.innerHTML = `
+    <h3 style="color:${s.color}">${s.name}</h3>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;line-height:1.6">${s.desc}</p>
+    <div style="font-size:12px;font-weight:700;color:var(--fcx-dark);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Signals Indicating This Scenario Is Materializing</div>
+    ${s.signals.map(sig => `
+      <div class="signal-item">
+        <span class="si-name">${sig.name}</span>
+        <span class="si-val" style="color:${sig.color}">${sig.val}</span>
+      </div>
+    `).join('')}
+    <div style="margin-top:16px;padding:14px;background:#f0ebe4;border-radius:8px;font-size:13px;color:var(--fcx-dark);font-weight:500">
+      ${s.choiceTriggers}
+    </div>
+    <div style="margin-top:20px;font-size:12px;font-weight:700;color:var(--fcx-dark);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Recommended Options Under This Scenario</div>
+    ${choiceMeta.map((cm,i) => {
+      const scenKey = ['supercycle','steady','recession','nationalism'][idx];
+      const rec = choiceRecs[scenKey][i];
+      const opts = choices[i].options;
+      let oLabel = '';
+      for (let j = 0; j < opts.length; j++) { if (opts[j].name === rec.rec) { oLabel = 'Option '+(j+1)+': '; break; } }
+      return '<div style="padding:10px 14px;margin-bottom:6px;border-left:4px solid '+s.color+';background:#f0ebe4;border-radius:0 6px 6px 0"><span style="font-size:11px;font-weight:700;color:var(--fcx-copper);letter-spacing:1px">'+cm.num+' | '+cm.title+'</span><div style="font-size:13px;font-weight:700;color:var(--fcx-dark);margin-top:3px"><span style="color:var(--fcx-copper)">'+oLabel+'</span>'+rec.rec+'</div><div style="font-size:11px;color:var(--text-light);margin-top:2px;line-height:1.4">'+rec.why+'</div></div>';
+    }).join('')}
+  `;
+  openModal('scenario-modal');
+}
+
+// ═══ SCENARIO BUILDER ENGINE ═══
+function gaussian(x,c,s){return Math.exp(-Math.pow(x-c,2)/(2*s*s));}
+
+const sigDefs=[
+  {id:'sig-cu',label:'Copper Price ($/lb)',horizon:'Average 2026–2029 expectation',min:250,max:900,def:584,
+   fmt:v=>'$'+(v/100).toFixed(2)+'/lb',lo:'$2.50',hi:'$9.00'},
+  {id:'sig-au',label:'Gold Price ($/oz)',horizon:'Average 2026–2029 expectation',min:2000,max:6000,def:4078,
+   fmt:v=>'$'+v.toLocaleString()+'/oz',lo:'$2,000',hi:'$6,000'},
+  {id:'sig-grasberg',label:'Grasberg Recovery Timeline',horizon:'Production recovery to pre-incident rates',min:0,max:100,def:55,
+   fmt:v=>v<=20?'Prolonged Delay (2028+)':v<=45?'Slow Recovery (late 2027)':v<=65?'On Schedule (Q2 2026 start)':v<=85?'Ahead of Schedule':'Full Restoration by Q4 2026',lo:'Delayed',hi:'Full Recovery'},
+  {id:'sig-ev',label:'EV + Electrification Adoption',horizon:'Global EV sales share by 2028',min:0,max:100,def:50,
+   fmt:v=>v<=15?'Stalls at 18% (subsidy expiry)':v<=35?'Slow growth to 22%':v<=60?'On trend: 25–28%':v<=80?'Accelerating: 30–35%':'Breakout: 40%+',lo:'Stalls',hi:'Breakout'},
+  {id:'sig-china',label:'China Demand Strength',horizon:'Manufacturing PMI trajectory',min:0,max:100,def:45,
+   fmt:v=>v<=20?'Deep Contraction (<47)':v<=40?'Mild Contraction (48–49)':v<=60?'Neutral (49–51)':v<=80?'Expansion (52–54)':'Strong Expansion (55+)',lo:'Contraction',hi:'Expansion'},
+  {id:'sig-regulation',label:'Host Country Regulatory Risk',horizon:'Indonesia, Peru, Chile policy trajectory',min:0,max:100,def:25,
+   fmt:v=>v<=15?'Stable / Supportive':v<=35?'Minor Adjustments':v<=55?'Moderate Tightening':v<=75?'Major Renegotiation':'Nationalization Risk',lo:'Stable',hi:'Hostile'},
+];
+
+// ═══ WYHTB ═══
+const wyhtbData = {
+  'sig-cu': [
+    {threshold:250, text:"You believe copper enters deep recession. Global demand contracts, China property crisis accelerates, and EV adoption stalls. For FCX: margins compress to near-breakeven at $2.22/lb cash costs. Growth capex must halt. Bagdad deferred indefinitely. FCX becomes a defensive cash-preservation story"},
+    {threshold:380, text:"You believe copper returns to pre-electrification norms. Supply catches up to demand. For FCX: margins are healthy but growth premium evaporates. Leaching economics still work at <$1.50/lb cost. Bagdad expansion is marginal. Focus shifts to cost optimization and shareholder returns"},
+    {threshold:500, text:"You believe copper stays elevated on structural electrification demand, broadly consistent with current spot of $5.84/lb. For FCX: robust margins ($3.50+/lb), all growth projects are highly economic. Bagdad expansion generates 15%+ IRR. Leaching is transformational. Gold credits further boost cash flow"},
+    {threshold:650, text:"You believe the supply deficit narrative is real and mine supply additions are insufficient. Goldman Sachs' $6.50 target. S&P Global (Jan 2026) confirms the gap widens 24% by 2040, with ore grades declining 40% since 1990 and average mine-to-production timelines stretching to 16.3 years. For FCX: every incremental pound of production is worth $4+/lb in margin. Bagdad expansion (with proven AHS infrastructure) is urgent. M&A becomes compelling even at premium valuations"},
+    {threshold:800, text:"You believe copper enters a genuine supercycle comparable to the 2000s commodity boom. AI data center buildout alone requires 1.1M tonnes annually by 2030, defense spending could double to $6T by 2040, and grid T&D investment needs $7.5T cumulative by 2040. Vale's CEO at PDAC 2026 validated a 5–6x mineral demand thesis. For FCX: EBITDA could reach $20B+. The strategic question shifts from 'should we invest' to 'are we investing fast enough'"},
+  ],
+  'sig-au': [
+    {threshold:2200, text:"You believe gold returns to historical norms as real rates normalize and geopolitical risk fades. For FCX: Grasberg gold credits shrink to $1.5B/yr, increasing effective copper cash costs by $0.30–0.40/lb. Indonesia investment case weakens relative to Americas"},
+    {threshold:3200, text:"You believe gold moderates from current levels but remains elevated. For FCX: gold credits of $2.5–3.0B/yr keep Grasberg unit economics world-class. Indonesia remains a core asset despite operational complexity"},
+    {threshold:4000, text:"You believe gold sustains near current levels ($4,078/oz) on central bank buying, geopolitical uncertainty, and currency debasement fears. For FCX: Grasberg gold revenue of $3.5–4.0B/yr makes it one of the most valuable mines on Earth. Strongly supports aggressive Grasberg restart"},
+    {threshold:5000, text:"You believe gold enters a new paradigm driven by de-dollarization and sovereign accumulation. For FCX: Grasberg gold revenue alone could approach $5–6B/yr. PT-FI becomes the crown jewel. Indonesia regulatory risk becomes the single most important variable in FCX's valuation"},
+  ],
+  'sig-grasberg': [
+    {threshold:10, text:"You believe the mud rush damage is worse than disclosed and Block 1 may be permanently impaired. For FCX: Indonesia production stays below 0.8B lbs Cu through 2029. Gold revenue cut by 50%+. Americas becomes the growth engine by necessity. Massive reallocation of capital and strategic focus required"},
+    {threshold:30, text:"You believe the restart faces continued setbacks — safety issues, regulatory friction, or geotechnical challenges. For FCX: production recovers to 1.0B lbs Cu by late 2027 but pre-incident rates (1.7B lbs) are not achieved until 2029+. Capital allocation to Indonesia should be conservative"},
+    {threshold:55, text:"You believe company guidance is accurate: Block 2 & 3 restart in Q2 2026, 85% of normal rates restored by H2 2026, Block 1 in 2027. The Sept 2025 mud rush (~800kt wet material) forced force majeure and contributed to reversing a ~200kt global surplus into a ~150kt deficit (ICSG). PTFI permit extension to 2041 is secured. For FCX: Indonesia production reaches 1.3–1.5B lbs Cu by 2028. Smelter operations normalize. Gold revenue recovers to $3.5B+/yr"},
+    {threshold:80, text:"You believe Grasberg recovery exceeds expectations — faster ramp-up, better grades, Block 1 ahead of schedule. For FCX: Indonesia production could reach 1.7B lbs Cu and 1.6M oz Au by 2028, fully restoring pre-incident output. Combined with high commodity prices, PT-FI generates $6–8B/yr EBITDA"},
+  ],
+  'sig-ev': [
+    {threshold:10, text:"You believe EV adoption stalls as subsidies expire, charging infrastructure lags, and consumers revert to ICE vehicles. For FCX: the structural copper demand growth thesis weakens. Copper demand grows at 1%/yr instead of 3%+. Supply deficit narrows. Long-term price ceiling of $4.50/lb"},
+    {threshold:35, text:"You believe EV adoption continues but at a slower pace than consensus. For FCX: copper demand growth of 2%/yr supports $4.50–5.00/lb copper but doesn't create the acute supply squeeze the supercycle thesis requires. Bagdad expansion is economic but not urgent"},
+    {threshold:55, text:"You believe IEA's base case holds: EVs reach 25–28% global share by 2028. Grid investment continues at current pace. For FCX: steady demand growth supports $5.00–5.50/lb copper. All organic growth projects are economic. Base case capital allocation is appropriate"},
+    {threshold:80, text:"You believe electrification accelerates: autonomous vehicle fleets, AI data center cooling demand (global data center consumption projected at 1,050 TWh by 2026), defense electrification, and grid buildout ($7.5T cumulative T&D investment needed by 2040 per IEA) create demand beyond consensus. Energy transition copper demand is projected to triple by 2045 — the most aggressive industrial material requirement since post-war reconstruction. For FCX: copper demand growth exceeds 4%/yr. Supply deficit acute by 2028. Every pound of production FCX can add is highly valuable"},
+  ],
+  'sig-china': [
+    {threshold:15, text:"You believe China enters a deep manufacturing recession. Property sector collapse accelerates, exports contract on trade restrictions. For FCX: copper demand contracts 3–5% globally. Prices drop to $3.00–3.50/lb. Focus shifts to cost-cutting and capital preservation"},
+    {threshold:35, text:"You believe China's manufacturing sector muddles through with mild contraction. Property drags but exports hold. For FCX: copper demand flat to modestly growing. Prices in the $4.00–4.50/lb range. Growth capex proceeds cautiously"},
+    {threshold:55, text:"You believe China stabilizes at neutral PMI (49–51). Current consensus. For FCX: copper demand grows at 2–3%/yr globally. Current commodity prices are supported. Base case strategic posture is appropriate"},
+    {threshold:80, text:"You believe China's stimulus takes hold, manufacturing expands, and infrastructure spending accelerates. For FCX: copper demand growth of 4%+ globally. Strong upward pressure on prices. Growth investment highly rewarded"},
+  ],
+  'sig-regulation': [
+    {threshold:10, text:"You believe host countries will maintain or improve mining frameworks to attract investment. Indonesia honors IUPK terms, Peru/Chile stabilize royalties. For FCX: full portfolio optionality preserved. Indonesia concentration risk is manageable. Multi-jurisdiction strategy is validated"},
+    {threshold:30, text:"You believe minor regulatory adjustments are likely but manageable. Indonesia may increase domestic processing requirements modestly. Peru royalties edge up 1–2%. For FCX: modest cost increases ($100–200M/yr) but no structural change to portfolio economics"},
+    {threshold:55, text:"You believe resource nationalism is intensifying. Indonesia pushes for higher state ownership above 51%, Peru enacts progressive royalty tied to copper price. For FCX: effective tax rate increases 3–5%. Indonesia investment case weakens. Americas assets become relatively more attractive"},
+    {threshold:80, text:"You believe major renegotiation is coming. Indonesia could restrict concentrate exports, demand 60%+ ownership, or impose windfall taxes. Peru/Chile follow Bolivia-style nationalization rhetoric. For FCX: multi-jurisdiction model breaks down. Capital must shift decisively to Americas. Grasberg valuation at risk"},
+  ],
+};
+
+function getWYHTB(sigId, value) {
+  const entries = wyhtbData[sigId];
+  if (!entries) return '';
+  let best = entries[0];
+  for (let i = 0; i < entries.length; i++) {
+    if (value >= entries[i].threshold) best = entries[i];
+  }
+  return best.text;
+}
+
+const scenFin={
+  supercycle:{ebitda:22.0,fcfPerShare:5.80,mktcap:140,eps:4.20,cuProd:4.5,auProd:1.5,cashCost:1.85,leverage:0.6,cuPrice:7.0,auPrice:4800},
+  steady:{ebitda:14.0,fcfPerShare:3.50,mktcap:100,eps:2.70,cuProd:4.0,auProd:1.2,cashCost:2.10,leverage:0.8,cuPrice:5.25,auPrice:4000},
+  recession:{ebitda:6.5,fcfPerShare:1.20,mktcap:50,eps:0.90,cuProd:3.2,auProd:0.9,cashCost:2.40,leverage:1.5,cuPrice:3.25,auPrice:2900},
+  nationalism:{ebitda:10.0,fcfPerShare:2.20,mktcap:70,eps:1.60,cuProd:3.5,auProd:0.8,cashCost:2.60,leverage:1.0,cuPrice:5.50,auPrice:4200},
+};
+
+const scenNamesMap={supercycle:'Copper Supercycle',steady:'Steady Demand Growth',recession:'Demand Shock',nationalism:'Resource Nationalism'};
+const scenNumMap={supercycle:'S1',steady:'S2',recession:'S3',nationalism:'S4'};
+
+const choiceMeta=[
+  {num:'Choice 1',title:'Grasberg & Indonesia'},
+  {num:'Choice 2',title:'Bagdad Expansion'},
+  {num:'Choice 3',title:'Leaching Scale-Up'},
+  {num:'Choice 4',title:'Capital Allocation'},
+  {num:'Choice 5',title:'M&A vs Organic'},
+];
+
+const choiceRecs={
+  supercycle:[
+    {rec:'Aggressive restart, full investment',why:'At $7/lb Cu and $4,800/oz Au, Grasberg generates $8B+/yr EBITDA. Accept Indonesia terms to maximize production'},
+    {rec:'Full commitment — FID mid-2026',why:'Every pound of new copper production worth $5+/lb margin. Bagdad\'s proven AHS infrastructure (33 autonomous trucks, 10–15% utilization gain) de-risks the expansion. IRR 15%+ even at conservative assumptions'},
+    {rec:'Aggressive scale — target 800M lbs by 2029',why:'AI-driven leaching at sub-$1/lb cost in a $7 copper world is the highest-return investment in FCX\'s portfolio. Pharmaceutical-grade additive modeling finds zones conventional methods miss'},
+    {rec:'Growth-first (60% growth / 40% returns)',why:'Maximize production growth to capture supercycle. Share buybacks can wait — copper in the ground is more valuable'},
+    {rec:'Bolt-on + exploration',why:'Add copper reserves opportunistically but don\'t overpay. Organic growth delivers better returns at $7/lb'},
+  ],
+  steady:[
+    {rec:'Phased restart, negotiate terms',why:'Balance Grasberg recovery with Indonesia leverage. Gold at $4,000/oz makes PT-FI worth defending'},
+    {rec:'Full commitment — FID mid-2026',why:'$5.25/lb copper makes Bagdad highly economic. US critical minerals positioning strengthens the case'},
+    {rec:'Moderate — target 600M lbs by 2030',why:'Proven recovery rates, solid economics. Scale steadily without overextending technology risk'},
+    {rec:'Balanced (45/55 growth vs returns)',why:'Fund Bagdad and moderate leaching while increasing dividends 10–15%/yr. Leverage stays comfortable at 0.8x'},
+    {rec:'Organic only — the organic doctrine',why:'Focus on Bagdad + leaching + Grasberg. No M&A premium needed when organic pipeline delivers 4.0B lbs by 2029'},
+  ],
+  recession:[
+    {rec:'Managed decline, shift capital to Americas',why:'At $3.25/lb Cu, Indonesia operational risk isn\'t worth the complexity. Protect low-cost US operations'},
+    {rec:'Defer pending Grasberg clarity',why:'$3.25/lb copper makes Bagdad expansion marginal. Preserve capital. Revisit when cycle turns'},
+    {rec:'Cautious — hold at 400M lbs, prove economics',why:'Leaching still works at $3.25/lb but scale-up capital is better preserved for defense'},
+    {rec:'Returns-first (30% growth / 70% returns)',why:'Copper near cyclical low — FCX should harvest cash flow, not invest. Buy back shares at depressed valuations'},
+    {rec:'Bolt-on + exploration',why:'Position for distressed acquisitions. Copper assets will be cheap. Build reserves for next upcycle'},
+  ],
+  nationalism:[
+    {rec:'Managed decline, shift capital to Americas',why:'Indonesia regulatory risk crystallizing. Redirect investment to Tier 1 US jurisdiction before terms worsen'},
+    {rec:'Full commitment — FID mid-2026',why:'US is the safe haven. Accelerate Bagdad to reduce Indonesia concentration. Critical minerals policy protects US assets'},
+    {rec:'Aggressive scale — target 800M lbs by 2029',why:'Leaching is 100% US-based, zero jurisdiction risk. Maximize the one growth lever fully within FCX\'s control'},
+    {rec:'Growth-first (60% growth / 40% returns)',why:'Redirect capital to Americas growth. Higher effective tax rates in Indonesia/Peru reduce returns there'},
+    {rec:'Organic only — the organic doctrine',why:'M&A in politically unstable jurisdictions adds risk. Focus on US organic growth and leaching innovation'},
+  ],
+};
+
+function buildSignals(){
+  const el=document.getElementById('builder-signals');
+  el.innerHTML=sigDefs.map(s=>`
+    <div class="signal-ctrl">
+      <label>${s.label} <span style="font-weight:400;font-size:11px;color:var(--fcx-copper);margin-left:4px">${s.horizon}</span></label>
+      <div class="sig-row">
+        <input type="range" class="sig-range" id="${s.id}" min="${s.min}" max="${s.max}" value="${s.def}" oninput="updateBuilder()">
+        <span class="sig-val" id="${s.id}-val">${s.fmt(s.def)}</span>
+      </div>
+      <div class="sig-labels"><span>${s.lo}</span><span>${s.hi}</span></div>
+      <div class="wyhtb-box" id="${s.id}-wyhtb">
+        <div class="wyhtb-label">What You Have to Believe</div>
+        <span>${getWYHTB(s.id, s.def)}</span>
+      </div>
+    </div>`).join('');
+}
+
+function resetSliders() {
+  sigDefs.forEach(s => {
+    document.getElementById(s.id).value = s.def;
+  });
+  updateBuilder();
+}
+
+const scenOrder=['supercycle','steady','recession','nationalism'];
+const targetBase={supercycle:0.30,steady:0.35,recession:0.20,nationalism:0.15};
+
+function computeRaw(cu,au,grasberg,ev,china,regulation){
+  return {
+    supercycle:(gaussian(cu,750,120)+gaussian(au,5000,800)+gaussian(grasberg,80,18)+gaussian(ev,85,16)+gaussian(china,80,16)+gaussian(regulation,10,15))/6,
+    steady:(gaussian(cu,525,80)+gaussian(au,4000,600)+gaussian(grasberg,55,18)+gaussian(ev,50,18)+gaussian(china,50,16)+gaussian(regulation,25,18))/6,
+    recession:(gaussian(cu,300,70)+gaussian(au,2800,500)+gaussian(grasberg,30,20)+gaussian(ev,15,14)+gaussian(china,15,14)+gaussian(regulation,20,20))/6,
+    nationalism:(gaussian(cu,550,100)+gaussian(au,4200,700)+gaussian(grasberg,40,22)+gaussian(ev,50,25)+gaussian(china,50,22)+regulation/100)/6,
+  };
+}
+
+const baseRaw=computeRaw(584,4078,55,50,45,25);
+const baseTotal=baseRaw.supercycle+baseRaw.steady+baseRaw.recession+baseRaw.nationalism;
+const calib={};
+scenOrder.forEach(k=>{ calib[k]=targetBase[k]*baseTotal/baseRaw[k]; });
+
+function scoreBuilder(){
+  const v={};
+  sigDefs.forEach(s=>v[s.id]=+document.getElementById(s.id).value);
+  const raw=computeRaw(v['sig-cu'],v['sig-au'],v['sig-grasberg'],v['sig-ev'],v['sig-china'],v['sig-regulation']);
+  scenOrder.forEach(k=>{ raw[k]*=calib[k]; });
+  const total=raw.supercycle+raw.steady+raw.recession+raw.nationalism;
+  return{supercycle:raw.supercycle/total,steady:raw.steady/total,recession:raw.recession/total,nationalism:raw.nationalism/total};
+}
+
+function updateBuilder(){
+  sigDefs.forEach(s=>{
+    const val = +document.getElementById(s.id).value;
+    document.getElementById(s.id+'-val').textContent=s.fmt(val);
+    const wyhtbEl = document.getElementById(s.id+'-wyhtb');
+    if(wyhtbEl) {
+      wyhtbEl.innerHTML = '<div class="wyhtb-label">What You Have to Believe</div><span>' + getWYHTB(s.id, val) + '</span>';
+    }
+  });
+
+  const w=scoreBuilder();
+  const sorted=Object.entries(w).sort((a,b)=>b[1]-a[1]);
+  const dom=sorted[0][0], dom2=sorted[1][0];
+  const domPct=(sorted[0][1]*100).toFixed(0);
+  const colors={supercycle:'var(--green)',steady:'var(--fcx-copper)',recession:'var(--amber)',nationalism:'var(--red)'};
+
+  // Blend bar
+  const blendBarEl = document.getElementById('blend-bar-container');
+  if(blendBarEl) {
+    blendBarEl.innerHTML = '<div class="blend-summary">' + scenOrder.map(k=>{
+      const pct=(w[k]*100).toFixed(0);
+      return `<div class="blend-seg bs-${k}" style="width:${Math.max(+pct,4)}%">${pct>8?pct+'%':''}</div>`;
+    }).join('') + '</div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-light);margin-top:4px">' + scenOrder.map(k=>{
+      return `<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${colors[k]};margin-right:4px"></span>${scenNumMap[k]}: ${scenNamesMap[k]} ${(w[k]*100).toFixed(0)}%</span>`;
+    }).join('') + '</div>';
+  }
+
+  // Gauge
+  const gaugeEl=document.getElementById('scenario-gauge');
+  gaugeEl.innerHTML=scenOrder.map(k=>{
+    const pct=(w[k]*100).toFixed(0);
+    const isDom=k===dom;
+    return `<div class="gauge-row">
+      <span class="gauge-label" style="${isDom?'font-weight:700':''}">
+        ${isDom?'\u2605 ':''}${scenNumMap[k]}: ${scenNamesMap[k]}</span>
+      <div class="gauge-track">
+        <div class="gauge-fill gf-${k}" style="width:${Math.max(+pct,6)}%">${pct}%</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Insight
+  const insightEl=document.getElementById('gauge-insight');
+  if(domPct>50){
+    insightEl.innerHTML='Your signals point strongly to <strong>'+scenNumMap[dom]+': '+scenNamesMap[dom]+'</strong> ('+domPct+'%). All five strategic choices below should be treated as actionable';
+  } else if(domPct>35){
+    insightEl.innerHTML='<strong>'+scenNumMap[dom]+': '+scenNamesMap[dom]+'</strong> leads at '+domPct+'%, but <strong>'+scenNumMap[dom2]+': '+scenNamesMap[dom2]+'</strong> is close at '+(sorted[1][1]*100).toFixed(0)+'%. Watch for choices tagged Somewhat Confident or Uncertain below';
+  } else {
+    insightEl.innerHTML='Your signals produce a <strong>blended scenario</strong> with no single future dominating. Focus on Confident choices and defer Uncertain ones until signals clarify';
+  }
+
+  // Financials — current vs future state comparison
+  const fin={};
+  ['ebitda','fcfPerShare','mktcap','eps','cuProd','auProd','cashCost','leverage','cuPrice','auPrice'].forEach(k=>{
+    fin[k]=0;
+    scenOrder.forEach(sc=>fin[k]+=w[sc]*scenFin[sc][k]);
+  });
+
+  // Current state (2025 actuals / 2026E guidance)
+  const current = {
+    ebitda:12.5, fcfPerShare:2.80, mktcap:97, eps:2.10,
+    cuProd:3.4, auProd:1.0, cashCost:2.22, leverage:0.4, cuPrice:5.84, auPrice:4078
+  };
+
+  const metrics = [
+    {key:'ebitda',   label:'EBITDA',            curLabel:'2025A',  futLabel:'2028–29E', fmt:v=>'$'+v.toFixed(1)+'B'},
+    {key:'cuProd',   label:'Cu Production',      curLabel:'2025A',  futLabel:'2028–29E', fmt:v=>v.toFixed(1)+'B lbs'},
+    {key:'auProd',   label:'Au Production',      curLabel:'2025A',  futLabel:'2028–29E', fmt:v=>v.toFixed(1)+'M oz'},
+    {key:'cashCost', label:'Unit Cash Cost',     curLabel:'2025A',  futLabel:'2028–29E', fmt:v=>'$'+v.toFixed(2)+'/lb', invert:true},
+    {key:'leverage', label:'Net Debt / EBITDA',  curLabel:'Current',futLabel:'Implied',  fmt:v=>v.toFixed(1)+'x',      invert:true},
+    {key:'mktcap',   label:'Market Cap',         curLabel:'Current',futLabel:'Implied',  fmt:v=>'$'+v.toFixed(0)+'B'},
+    {key:'fcfPerShare',label:'FCF / Share',      curLabel:'2025A',  futLabel:'2028–29E', fmt:v=>'$'+v.toFixed(2)},
+    {key:'eps',      label:'Earnings / Share',   curLabel:'2025A',  futLabel:'2028–29E', fmt:v=>'$'+v.toFixed(2)},
+    {key:'cuPrice',  label:'Copper Price',       curLabel:'Spot',   futLabel:'Implied',  fmt:v=>'$'+v.toFixed(2)+'/lb'},
+    {key:'auPrice',  label:'Gold Price',         curLabel:'Spot',   futLabel:'Implied',  fmt:v=>'$'+v.toLocaleString(undefined,{maximumFractionDigits:0})+'/oz'},
+  ];
+
+  const compEl=document.getElementById('builder-comparison');
+  compEl.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden">
+      <div style="background:var(--fcx-dark);padding:14px 20px;color:rgba(255,255,255,.7);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.1)">Current State</div>
+      <div style="background:var(--fcx-copper);padding:14px 20px;color:#fff;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase">Your Future State (2028–2029)</div>
+      ${metrics.map((m,i) => {
+        const c = current[m.key];
+        const f = fin[m.key];
+        const rawDelta = m.invert ? ((c-f)/c*100) : ((f-c)/c*100);
+        const delta = rawDelta.toFixed(0);
+        const isPos = rawDelta >= 0;
+        const deltaColor = isPos ? 'var(--green)' : 'var(--red)';
+        const arrow = isPos ? '&#9650;' : '&#9660;';
+        const bg = i%2===0 ? '#fafafa' : '#fff';
+        return `
+          <div style="padding:12px 20px;background:${bg};border-right:1px solid var(--border);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:10px;color:var(--text-light);font-weight:600;text-transform:uppercase;letter-spacing:0.5px">${m.label} <span style="font-weight:400">(${m.curLabel})</span></div>
+              <div style="font-size:20px;font-weight:700;color:var(--fcx-dark);margin-top:2px">${m.fmt(c)}</div>
+            </div>
+          </div>
+          <div style="padding:12px 20px;background:${bg};border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:10px;color:var(--text-light);font-weight:600;text-transform:uppercase;letter-spacing:0.5px">${m.label} <span style="font-weight:400">(${m.futLabel})</span></div>
+              <div style="font-size:20px;font-weight:700;color:var(--fcx-copper);margin-top:2px">${m.fmt(f)}</div>
+            </div>
+            <div style="text-align:right">
+              <span style="font-size:13px;font-weight:700;color:${deltaColor}">${arrow} ${isPos?'+':''}${delta}%</span>
+            </div>
+          </div>`;
+      }).join('')}
+    </div>`;
+
+  // Builder choices (Step 3)
+  const decsEl=document.getElementById('builder-decs');
+  const dom3=sorted.length>2?sorted[2][0]:dom2;
+  // Helper: find which option number (O1, O2, O3) a recommendation maps to
+  function optionNum(choiceIdx, recName) {
+    const opts = choices[choiceIdx].options;
+    for (let j = 0; j < opts.length; j++) {
+      if (opts[j].name === recName) return 'Option ' + (j+1);
+    }
+    return '';
+  }
+
+  decsEl.innerHTML=choiceMeta.map((d,i)=>{
+    const rec=choiceRecs[dom][i];
+    const rec2=choiceRecs[dom2][i];
+    const rec3=choiceRecs[dom3][i];
+    const top2Agree=rec.rec===rec2.rec;
+    let conf, label;
+    if(top2Agree){ conf='confident'; label='WITH CONFIDENCE'; }
+    else {
+      const spread=sorted[0][1]-sorted[1][1];
+      if(spread>0.15){ conf='somewhat-confident'; label='WITH SOME CONFIDENCE'; }
+      else { conf='uncertain'; label='WITH CAUTION'; }
+    }
+    const oNum = optionNum(i, rec.rec);
+    const oNum2 = optionNum(i, rec2.rec);
+    return `<div class="builder-dec ${conf}">
+      <div class="bd-num">${d.num} | ${d.title} <span class="conf-badge cb-${conf}">${label}</span></div>
+      <div class="bd-rec">${oNum?'<span style="color:var(--fcx-copper);margin-right:4px">'+oNum+':</span>':''}${rec.rec}</div>
+      <div class="bd-why">${rec.why}${!top2Agree
+        ?' <div style="margin-top:4px;font-size:11px;color:var(--amber)">If '+scenNumMap[dom2]+': '+scenNamesMap[dom2]+': '+(oNum2?oNum2+': ':'')+rec2.rec+'</div>'
+        :''
+      }</div>
+    </div>`;
+  }).join('');
+}
+
+// ═══ INITIALIZE ═══
+buildSignals();
+updateBuilder();
+</script>
+</body>
+</html>
